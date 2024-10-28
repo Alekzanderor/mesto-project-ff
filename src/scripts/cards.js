@@ -1,3 +1,4 @@
+
 const initialCards = [
     {
       name: "Архыз",
@@ -30,3 +31,4 @@ const initialCards = [
       alt: "Скала, вдающаяся в озеро",
     }
 ];
+export default initialCards;
