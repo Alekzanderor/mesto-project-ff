@@ -13,6 +13,8 @@ import {
   handleFormSubmit,
   profileForm,
   newPlaceForm,
+  setFormValues,
+  resetFormValues
 } from "./scripts/forms.js";
 
 // @todo: Вывести карточки на страницу
@@ -37,10 +39,12 @@ const profileAddPopup = document.querySelector(".popup_type_new-card");
 
 profileEditButtonPopup.addEventListener("click", function () {
   openPopup(profileEditPopup);
+  setFormValues();
 });
 
 profileAddButtonPopup.addEventListener("click", function () {
   openPopup(profileAddPopup);
+  resetFormValues();
 });
 
 cardList.addEventListener("click", (evt) => {
@@ -55,3 +59,4 @@ cardList.addEventListener("click", handleCardZoom);
 
 profileForm.addEventListener("submit", handleFormSubmit);
 newPlaceForm.addEventListener("submit", handleNewPlaceFormSubmit);
+

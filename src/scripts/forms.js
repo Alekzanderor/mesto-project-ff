@@ -8,9 +8,17 @@ const profileForm = document.forms["edit-profile"];
 const profileFormName = profileForm.name;
 const profileFormJobDescription = profileForm.description;
 
+const formNewCard = document.querySelector(".popup_type_new-card");
+const formNewCardForm = formNewCard.querySelector(".popup__form");
+
 function setFormValues() {
   profileFormName.value = profileTitle.textContent;
   profileFormJobDescription.value = profileJobDescription.textContent;
+}
+
+function resetFormValues(){
+
+  formNewCardForm.reset();
 }
 
 function handleFormSubmit(evt) {
@@ -18,7 +26,7 @@ function handleFormSubmit(evt) {
 
   profileTitle.textContent = profileFormName.value;
   profileJobDescription.textContent = profileFormJobDescription.value;
-
+  setFormValues();
   closePopup(evt);
 }
 
@@ -74,6 +82,7 @@ export {
   handleNewPlaceFormSubmit,
   handleFormSubmit,
   setFormValues,
+  resetFormValues,
   profileForm,
   newPlaceForm,
 };

@@ -1,7 +1,7 @@
 //Открытие и закрытие попапов
 
 let buttonPopupClose;
-const formNewCard = document.querySelector(".popup_type_new-card");
+
 
 //обработка открытий и закрытий
 function stopBubble(evt) {
@@ -18,8 +18,7 @@ function openPopup(popupElement) {
   popupElement
     .querySelector(".popup__content")
     .addEventListener("click", stopBubble);
-
-  setFormValues();
+  
 }
 
 function closePopup(evt) {
@@ -39,7 +38,7 @@ function closePopup(evt) {
     .querySelector(".popup__content")
     .removeEventListener("click", stopBubble);
 
-  formNewCard.querySelector(".popup__form").reset();
+  //formNewCard.querySelector(".popup__form").reset();
 }
 
 function escKeyHandler(evt) {
@@ -52,4 +51,3 @@ function escKeyHandler(evt) {
 }
 
 export { closePopup, escKeyHandler, openPopup };
-import { setFormValues } from "./forms.js";
