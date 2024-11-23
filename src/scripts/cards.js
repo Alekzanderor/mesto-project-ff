@@ -1,5 +1,5 @@
 
-const initialCards = [
+let initialCards = [
     {
       name: "Архыз",
       link: "https://pictures.s3.yandex.net/frontend-developer/cards-compressed/arkhyz.jpg",
@@ -32,3 +32,7 @@ const initialCards = [
     }
 ];
 export default initialCards;
+import {getCards} from "./api.js";
+//initialCards = Array.from(getCards());
+///initialCards = getCards();
+///console.log(initialCards);

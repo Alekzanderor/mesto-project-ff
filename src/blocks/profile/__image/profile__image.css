@@ -7,6 +7,7 @@
   background-size: cover;
   background-position: center;
   margin: 0 29px 0 0;
+  position: relative;background-color: rgba(0, 0, 0, 0.541);
 }
 
 @media screen and (max-width: 740px) {
@@ -19,4 +20,50 @@
   .profile__image {
     margin-right: 0;
   }
+}
+
+.profile__image:hover {
+  cursor: pointer; 
+}
+
+.profile__image::before {
+  
+  content: "";
+
+  background-color: rgba(0, 0, 0, 0);
+  position: absolute;
+  inset-block-start: 0px;
+  inset-inline-start: 0px;
+  inline-size: 100%;
+  block-size: 100%;
+  transition: background-color 0.5s ease-in-out; 
+  
+}
+
+.profile__image:hover::before {
+  background-color: rgba(0, 0, 0, 0.8);
+  transition: background-color 0.5s ease-in-out;
+
+}
+
+.profile__image::after {
+  
+  content: "";
+
+  opacity: 0;
+  position: absolute;
+  inset-block-start: 0px;
+  inset-inline-start: 0px;
+  inline-size: 100%;
+  block-size: 100%;
+  transition: opacity 0.5s ease-in-out;
+  background-repeat: no-repeat;
+  background-position: center;
+  
+}
+
+.profile__image:hover::after {
+    opacity: 1;
+  transition: opacity 0.5s 0.25s ease-in-out ;
+  background-image: url('C:/Red/Dev/WebDev/Yandex_Praktikum_Projects/5_sprint/mesto-project-ff/src/images/Vector.png');
 }
