@@ -1,173 +1,81 @@
-export { getUser, getCards, updateUser,postCard, toggleLike, deleteCard, updateAvatar };
+export {
+  getUser,
+  getCards,
+  updateUser,
+  postCard,
+  toggleLike,
+  deleteCard,
+  updateAvatar,
+};
 
 const config = {
-    baseUrl: 'https://nomoreparties.co/v1/wff-cohort-26',
-    headers: {
-      authorization: '2a320ddc-d2b3-4e8a-b7e5-1e313423461f',
-      'Content-Type': 'application/json'
-    }
-  }
-
-/*const profileTitle = document.querySelector('.profile__title');
-const profileDescription = document.querySelector('.profile__description');
-const profileImage = document.querySelector('.profile__image');*/
+  baseUrl: "https://nomoreparties.co/v1/wff-cohort-26",
+  headers: {
+    authorization: "2a320ddc-d2b3-4e8a-b7e5-1e313423461f",
+    "Content-Type": "application/json",
+  },
+};
 
 //инфа о юзере
 function getUser() {
   return fetch(`${config.baseUrl}/users/me`, {
     headers: config.headers,
-    
-  })//.then((res) => res.json())
-  .then((res) => {
-    if (res.ok) {
-      return res.json();
-    }
-
-    // если ошибка, отклоняем промис
-    return Promise.reject(`Ошибка: ${res.status}`);
-  });
-
-  //.then((result) => {
-  /*
-      profileTitle.textContent=result.name;
-      profileDescription.textContent=result.about;
-      profileImage.src=result.avatar;*/
-  //})
+  }).then(handleResponse);
 }
 
 //Загружаем карточки с сервера
 function getCards() {
   return fetch(`${config.baseUrl}/cards`, {
     headers: config.headers,
-  }).then((res) => {
-    if (res.ok) {
-      return res.json();
-    }
-
-    // если ошибка, отклоняем промис
-    return Promise.reject(`Ошибка: ${res.status}`);
-  });
-  /*.then((result) => {
-        //console.log(result);
-        console.log('123');
-      });*/
+  }).then(handleResponse);
 }
 
-function updateUser(userName,userAbout) {
+function updateUser(userName, userAbout) {
   return fetch(`${config.baseUrl}/users/me`, {
     method: "PATCH",
-    headers: config.headers,    
+    headers: config.headers,
     body: JSON.stringify({
       name: userName,
-      about: userAbout
+      about: userAbout,
     }),
-  }).then((res) => {
-    if (res.ok) {
-      return res.json();
-    }
-
-    // если ошибка, отклоняем промис
-    return Promise.reject(`Ошибка: ${res.status}`);
-  });
+  }).then(handleResponse);
 }
 
-function postCard (name,link,alt)  {
-    return fetch(`${config.baseUrl}/cards`, {
-      method: 'POST',
-      headers: config.headers,
-      body: JSON.stringify({
-        name,
-         link,
-        alt
-      }),
-    }).then((res) => {
-      if (res.ok) {
-        return res.json();
-      }
-  
-      // если ошибка, отклоняем промис
-      return Promise.reject(`Ошибка: ${res.status}`);
-    });
-  }
+function postCard(name, link) {
+  return fetch(`${config.baseUrl}/cards`, {
+    method: "POST",
+    headers: config.headers,
+    body: JSON.stringify({
+      name,
+      link,
+    }),
+  }).then(handleResponse);
+}
 
- /*function toggleLike  (cardID) {
-   
-      /*return fetch(`${config.baseUrl}/cards/likes/${cardID}`, {
-        method: 'DELETE',
-        headers: config.headers
-      })*/
-      //.then(res => checkResponse(res))
-    //} else {
-     /* return fetch(`${config.baseUrl}/cards/likes/${cardID}`, {
-        method: 'PUT',
-        headers: config.headers
-      })*/
-      //.then(res => checkResponse(res))
-      
-   // }
-  //};
+function handleResponse(res) {
+  return res.ok ? res.json() : Promise.reject(`Ошибка: ${res.status}`);
+}
 
-  
-   function toggleLike  (cardID, isLiked) {
-    if (isLiked) {
-      return fetch(`${config.baseUrl}/cards/likes/${cardID}`, {
-        method: 'DELETE',
-        headers: config.headers
-      }).then((res) => {
-        if (res.ok) {
-          return res.json();
-        }
-    
-        // если ошибка, отклоняем промис
-        return Promise.reject(`Ошибка: ${res.status}`);
-      });
-      //.then(res => checkResponse(res))
-    } else {
-      return fetch(`${config.baseUrl}/cards/likes/${cardID}`, {
-        method: 'PUT',
-        headers: config.headers
-      }).then((res) => {
-        if (res.ok) {
-          return res.json();
-        }
-    
-        // если ошибка, отклоняем промис
-        return Promise.reject(`Ошибка: ${res.status}`);
-      });
-      //.then(res => checkResponse(res))
-      
-    }
-  };
-  
-  const deleteCard = (cardID) => {
-    return fetch(`${config.baseUrl}/cards/${cardID}`, {
-      method: 'DELETE',
-      headers: config.headers
-    }).then((res) => {
-      if (res.ok) {
-        return res.json();
-      }
-  
-      // если ошибка, отклоняем промис
-      return Promise.reject(`Ошибка: ${res.status}`);
-    });
-    //.then(res => checkResponse(res))
-  };
+function toggleLike(cardID, isLiked) {
+  return fetch(`${config.baseUrl}/cards/likes/${cardID}`, {
+    method: isLiked ? "DELETE" : "PUT",
+    headers: config.headers,
+  }).then(handleResponse);
+}
 
-  const updateAvatar = (imgLink)  => {
-    return fetch(`${config.baseUrl}/users/me/avatar`, {
-      method: 'PATCH',
-      headers: config.headers,
-      body: JSON.stringify({
-        avatar: imgLink
-      })
-    }).then((res) => {
-      if (res.ok) {
-        return res.json();
-      }
-  
-      // если ошибка, отклоняем промис
-      return Promise.reject(`Ошибка: ${res.status}`);
-    });
-    //.then(res => checkResponse(res))
-  };
+const deleteCard = (cardID) => {
+  return fetch(`${config.baseUrl}/cards/${cardID}`, {
+    method: "DELETE",
+    headers: config.headers,
+  }).then(handleResponse);
+};
+
+const updateAvatar = (imgLink) => {
+  return fetch(`${config.baseUrl}/users/me/avatar`, {
+    method: "PATCH",
+    headers: config.headers,
+    body: JSON.stringify({
+      avatar: imgLink,
+    }),
+  }).then(handleResponse);
+};

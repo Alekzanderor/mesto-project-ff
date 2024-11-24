@@ -2,12 +2,7 @@ import "./pages/index.css"; // добавляем импорт главного 
 import initialCards from "./scripts/cards.js";
 import {
   handleCardLike,
-  deleteCard,
-  addCard,
-  cardList,
-  getLikes,
-  isCardLiked,
-  isLiked,
+  createCard,
   handleDeleteCard
 } from "./scripts/card.js";
 import { openPopup } from "./scripts/modal.js";
@@ -19,27 +14,22 @@ import {
   profileForm,
   newPlaceForm,
   newAvatarForm,
-  setFormValues,
-  resetFormValues,
+  setProfileFormValues,
+  resetNewFormValues,
+  resetNewAvatarFormValues,
   profileTitle,
-  profileDescription,
+  profileJobDescription,
   profileImage
 } from "./scripts/forms.js";
 import{
   enableValidation,
    clearValidation   
 } from "./scripts/validation.js";
-import {getUser,getCards,updateUser} from "./scripts/api.js";
+import {getUser,getCards} from "./scripts/api.js";
 
-// @todo: Вывести карточки на страницу
-/*
-function loadStarterCards(initialCards) {
-  initialCards.forEach((initialCard) => {
-    cardList.append(addCard(initialCard));
-  });
-}
+export {cardList};
 
-loadStarterCards(initialCards);*/
+const cardList = document.querySelector(".places__list");
 
 const allPopups = document.querySelectorAll(".popup");
 
@@ -54,43 +44,37 @@ const profileEditPopup = document.querySelector(".popup_type_edit");
 const profileAddPopup = document.querySelector(".popup_type_new-card");
 const profileEditAvatarPopup = document.querySelector(".popup_type_avatar");
 
-enableValidation({
+const config = {
   formSelector: '.popup__form',
   inputSelector: '.popup__input',
   submitButtonSelector: '.popup__button',
   inactiveButtonClass: 'popup__button_disabled',
   inputErrorClass: 'popup__input_type_error',
   errorClass: 'popup__error_visible'
-}); 
+}
+
+enableValidation(config); 
 
 
 profileEditButtonPopup.addEventListener("click", function () {
   openPopup(profileEditPopup);
-  setFormValues();
-  clearValidation(profileEditPopup); 
+  setProfileFormValues();
+  clearValidation(profileForm,config); 
 });
 
 profileAddButtonPopup.addEventListener("click", function () {
   openPopup(profileAddPopup);
-  resetFormValues();
-  clearValidation(profileAddPopup);
+  resetNewFormValues();
+  clearValidation(newPlaceForm,config);
 });
 
 profileEditAvatar.addEventListener("click", function () {
   openPopup(profileEditAvatarPopup);
-  resetFormValues();
-  clearValidation(profileEditAvatarPopup); 
+  resetNewAvatarFormValues();
+  clearValidation(newAvatarForm,config); 
+  
 });
 
-cardList.addEventListener("click", (evt) => {
-  if (evt.target.classList.contains("card__delete-button")) {
-    const placesItem = evt.target.closest(".places__item");
-    handleDeleteCard(placesItem);
-  }
-});
-
-cardList.addEventListener("click", handleCardLike);
-cardList.addEventListener("click", handleCardZoom);
 
 profileForm.addEventListener("submit", handleFormSubmit);
 newPlaceForm.addEventListener("submit", handleNewPlaceFormSubmit);
@@ -103,17 +87,13 @@ Promise.all([getUser(), getCards()])
   .then(([userData, cardsData]) => {
     // Загрузка инфы о пользователе с сервера
     profileTitle.textContent = userData.name;
-    profileDescription.textContent = userData.about;
+    profileJobDescription.textContent = userData.about;
     //profileImage.src = userData.avatar;
     profileImage.style = `background-image: url(${userData.avatar})`;    
 
-
     // Загрузка карточек с сервера
     cardsData.forEach((card) => {
-      cardList.append(addCard(card));
-      const likeButton = cardList.lastChild.querySelector('.card__like-button')
-      getLikes(card,cardList.lastChild);
-      isCardLiked(card,likeButton,userData._id);      
+      cardList.append(createCard(card,userData._id,handleCardZoom,handleDeleteCard,handleCardLike));      
     })
 
   

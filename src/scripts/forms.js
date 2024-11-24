@@ -10,47 +10,34 @@ const profileForm = document.forms["edit-profile"];
 
 const profileFormName = profileForm.name;
 const profileFormJobDescription = profileForm.description;
-const profileFormSubmitButton = profileForm.querySelector(".popup__button");
 
 const formNewCard = document.querySelector(".popup_type_new-card");
 const formNewCardForm = formNewCard.querySelector(".popup__form");
-const formNewCardSubmitButton = formNewCardForm.querySelector(".popup__button");
 
-function setFormValues() {
-  /*Promise.resolve(getUser()).then((userData) => {
-    profileFormName.value = userData.name;
-    profileFormJobDescription.value = userData.about;
-  });*/
-  getUser()
-  .then((userData) => {
-    profileFormName.value = userData.name;
-    profileFormJobDescription.value = userData.about;
-  })
-  .catch((err) => {
-    console.log(err); // выводим ошибку в консоль
-  }); ;
+function setProfileFormValues() {
+    profileFormName.value = profileTitle.textContent;
+    profileFormJobDescription.value = profileJobDescription.textContent; 
 }
 
-function resetFormValues() {
+function resetNewFormValues() {
   formNewCardForm.reset();
+}
+
+function resetNewAvatarFormValues() {
+  newAvatarForm.reset();
 }
 
 function handleFormSubmit(evt) {
   evt.preventDefault();  
   renderLoading(true, profileForm);
   updateUser(profileFormName.value, profileFormJobDescription.value)
-    .then(() =>getUser())
     .then((userData)=>{
       profileTitle.textContent = userData.name;
       profileJobDescription.textContent = userData.about;
-    })
-    .then(setFormValues())    
-    .then(renderLoading(false, profileForm))
-    .then(closePopup(evt))
-    .catch((err) => {
-      console.log(err); // выводим ошибку в консоль
-    }); 
-    
+      closePopup(evt)
+    })  
+    .catch((err) =>console.log(err) )// выводим ошибку в консоль
+    .finally(renderLoading(false, profileForm))  
   }
   
 // окно добавления карточки
@@ -59,22 +46,19 @@ const newPlaceForm = document.forms["new-place"];
 
 const newPlaceFormName = newPlaceForm["place-name"];
 const newPlaceFormLink = newPlaceForm["link"];
-const newPlaceFormAlt = newPlaceForm["place-name"];
 
 function handleNewPlaceFormSubmit(evt) {
   evt.preventDefault();
   renderLoading(true, newPlaceForm);
   const name = newPlaceFormName.value;
   const link = newPlaceFormLink.value;
-  const alt = newPlaceFormAlt.value;  
 
-  postCard(name, link, alt)  
-  .then((card)=>cardList.prepend(addCard(card)))
-  .then(renderLoading(false, newPlaceForm))
-  .then(closePopup(evt))
-  .catch((err) => {
-    console.log(err); // выводим ошибку в консоль
-  }); 
+  postCard(name, link)  
+  .then((card)=>{
+    cardList.prepend(createCard(card,card.owner._id,handleCardZoom,handleDeleteCard,handleCardLike))
+    closePopup(evt)})
+  .catch((err) => console.log(err))// выводим ошибку в консоль
+  .finally(renderLoading(false, newPlaceForm))  
 }
 
 //Просмотр картинки
@@ -105,20 +89,14 @@ function handleCardZoom(evt) {
 
 const newAvatarForm = document.forms["update-avatar"];
 const formNewAvatarLink = newAvatarForm.querySelector(".popup__input_type_url");
-const formNewAvatarSubmitButton = newAvatarForm.querySelector(".popup__button");
-
-
-
 
 function avatarSubmit() {
   renderLoading(true, newAvatarForm);
   const link = formNewAvatarLink.value;
   updateAvatar(link)
-  .then(  profileImage.style = `background-image: url(${link})`)
-  .then(renderLoading(false, newAvatarForm))
-  .catch((err) => {
-    console.log(err); // выводим ошибку в консоль
-  }); 
+  .then((res) => profileImage.style = `background-image: url(${res.avatar})`)  
+  .catch((err) => console.log(err)) // выводим ошибку в консоль
+  .finally(renderLoading(false, newAvatarForm))   
 }
 
 function handleAvatarSubmit(evt) {
@@ -131,10 +109,8 @@ function renderLoading(isLoading, form) {
   const formButton = form.querySelector(".popup__button");
 
   if (isLoading) {
-    console.log("Сохранение...")
     formButton.textContent = "Сохранение...";
   } else {
-    console.log("Сохранение завершено!")
     formButton.textContent = "Сохранить";
   }
 }
@@ -144,15 +120,18 @@ export {
   handleNewPlaceFormSubmit,
   handleFormSubmit,
   handleAvatarSubmit,
-  setFormValues,
-  resetFormValues,
+  setProfileFormValues,
+  resetNewFormValues,
+  resetNewAvatarFormValues,
   profileForm,
   newPlaceForm,
   newAvatarForm,
   profileTitle,
-  profileJobDescription as profileDescription,
+  profileJobDescription,
   profileImage
 };
 import { closePopup, openPopup } from "./modal.js";
-import { cardList, addCard,getLikes,isCardLiked } from "./card";
-import { getUser, updateUser, postCard, getCards, updateAvatar } from "./api";
+import { createCard,handleDeleteCard,handleCardLike } from "./card";
+import { updateUser, postCard, updateAvatar } from "./api";
+
+import {cardList} from "../index.js"

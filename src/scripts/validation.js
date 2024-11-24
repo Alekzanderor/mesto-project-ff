@@ -15,16 +15,13 @@ const hideInputError = (formElement, inputElement) => {
 };
 
 const checkInputValidity = (formElement, inputElement) => {
-  const regexp = /[^a-zа-яё\-\ ]/gi;
   inputElement.setCustomValidity("");
-  if (!inputElement.validity.valid) {
+  if (inputElement.validity.patternMismatch && inputElement.type != "url") {
+    inputElement.setCustomValidity(inputElement.dataset.errorMessage);
+    showInputError(formElement, inputElement, inputElement.validationMessage);
+  } else if (!inputElement.validity.valid) {
     if (formElement)
       showInputError(formElement, inputElement, inputElement.validationMessage);
-  } else if (regexp.test(inputElement.value) && inputElement.type != "url") {
-    inputElement.setCustomValidity(
-      "Поле может содержать латинские и кириллические буквы, знаки дефиса и пробелы"
-    );
-    showInputError(formElement, inputElement, inputElement.validationMessage);
   } else {
     hideInputError(formElement, inputElement);
   }
@@ -66,18 +63,17 @@ function enableValidation(config) {
   });
 }
 
-function clearValidation(profilePopup) {
-  const formElement = profilePopup.querySelector(validationConfig.formSelector);
+function clearValidation(profileForm, config) {
+  validationConfig = config;
   const inputList = Array.from(
-    formElement.querySelectorAll(validationConfig.inputSelector)
+    profileForm.querySelectorAll(validationConfig.inputSelector)
   );
-  const buttonElement = formElement.querySelector(
+  const buttonElement = profileForm.querySelector(
     validationConfig.submitButtonSelector
   );
   inputList.forEach((inputElement) => {
     inputElement.setCustomValidity("");
-    hideInputError(formElement, inputElement);
-    buttonElement.classList.add(validationConfig.inactiveButtonClass);
+    hideInputError(profileForm, inputElement);
     toggleButtonState(inputList, buttonElement);
   });
 }
@@ -91,8 +87,10 @@ function hasInvalidInput(inputList) {
 function toggleButtonState(inputList, buttonElement) {
   if (hasInvalidInput(inputList)) {
     buttonElement.classList.add(validationConfig.inactiveButtonClass);
+    buttonElement.disabled = true;
   } else {
     buttonElement.classList.remove(validationConfig.inactiveButtonClass);
+    buttonElement.disabled = false;
   }
 }
 
