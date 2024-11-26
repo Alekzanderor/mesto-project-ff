@@ -37,7 +37,7 @@ function handleFormSubmit(evt) {
       closePopup(evt)
     })  
     .catch((err) =>console.log(err) )// выводим ошибку в консоль
-    .finally(renderLoading(false, profileForm))  
+    .finally(()=>renderLoading(false, profileForm))  
   }
   
 // окно добавления карточки
@@ -58,7 +58,7 @@ function handleNewPlaceFormSubmit(evt) {
     cardList.prepend(createCard(card,card.owner._id,handleCardZoom,handleDeleteCard,handleCardLike))
     closePopup(evt)})
   .catch((err) => console.log(err))// выводим ошибку в консоль
-  .finally(renderLoading(false, newPlaceForm))  
+  .finally(()=>renderLoading(false, newPlaceForm))  
 }
 
 //Просмотр картинки
@@ -96,7 +96,7 @@ function avatarSubmit() {
   updateAvatar(link)
   .then((res) => profileImage.style = `background-image: url(${res.avatar})`)  
   .catch((err) => console.log(err)) // выводим ошибку в консоль
-  .finally(renderLoading(false, newAvatarForm))   
+  .finally(()=>renderLoading(false, newAvatarForm))   
 }
 
 function handleAvatarSubmit(evt) {
